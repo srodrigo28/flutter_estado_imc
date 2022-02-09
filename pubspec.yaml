@@ -31,6 +31,7 @@ dependencies:
     sdk: flutter
   syncfusion_flutter_gauges: ^19.2.46
   currency_text_input_formatter: ^2.0.1
+  intl: ^0.17.0
 
 
   # The following adds the Cupertino Icons font to your application.
