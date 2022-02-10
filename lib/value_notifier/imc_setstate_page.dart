@@ -6,36 +6,40 @@ import 'package:intl/intl.dart';
 
 import '../widgets/imc_gauge.dart';
 
-class ImcSetstatePage extends StatefulWidget {
-  const ImcSetstatePage({Key? key}) : super(key: key);
+class ValueNofifierPage extends StatefulWidget {
+  const ValueNofifierPage({Key? key}) : super(key: key);
 
   @override
-  State<ImcSetstatePage> createState() => _ImcSetstatePageState();
+  State<ValueNofifierPage> createState() => _ImcSetstatePageState();
 }
 
-class _ImcSetstatePageState extends State<ImcSetstatePage> {
+class _ImcSetstatePageState extends State<ValueNofifierPage> {
   final pesoEC = TextEditingController();
   final alturaEC = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  var imc = 0.0;
+  var imc = ValueNotifier(0.0);
 
-  Future<void> _calcularIMC({ required double peso, required double altura}) async{
-    setState(() {
-      imc = 0;
-    });
+  @override
+  void dispose(){
+    pesoEC.dispose();
+    alturaEC.dispose();
+    super.dispose();
+  }
+
+  Future<void> _calcularIMC(
+      { required double peso, required double altura}) async{
+    imc.value = 0;
     await Future.delayed(const Duration(seconds: 1));
-
-    setState(() {
-      imc = peso / pow(altura, 2);
-    });
-
+    imc.value = peso / pow(altura,2);
 
   }
 
   @override
   Widget build(BuildContext context) {
+    print('---------------------------------------------');
+    print('BUILD_TELA');
     return Scaffold(
-      appBar: AppBar(title: const Text('Imc SetState')),
+      appBar: AppBar(title: const Text('Value Notifier')),
       body: SingleChildScrollView(
         child: Form(
           key: formKey,
@@ -43,7 +47,12 @@ class _ImcSetstatePageState extends State<ImcSetstatePage> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                ImcGauge(imc: imc),
+                ValueListenableBuilder<double>(
+                    valueListenable: imc,
+                    builder: (_, imcValue, __) {
+                      return ImcGauge(imc: imcValue);
+                    }
+                ),
                 const SizedBox(height: 20,),
                 TextFormField(
                   controller: pesoEC,
